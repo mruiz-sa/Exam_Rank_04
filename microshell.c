@@ -17,6 +17,20 @@ static int print(char *str)
 	return (1);
 }
 
+static int exec_cd(char **av)
+{
+	if (av[2] && strcmp(av[2], "|") && strcmp(av[2], ";"))
+		return (0);
+	if (chdir(av[1]) == -1)
+	{
+		print("error: cd: cannot change directory to ");
+		print(av[1]);
+		print("\n");
+		return (0);
+	}
+	return (0);
+}
+
 static int executor(char **av, int i, char **env)
 {
 	int pid;
@@ -85,7 +99,7 @@ int main(int ac, char **av, char **env)
 		i = 0;
 		while (av[i] && strcmp(av[i], "|") && strcmp(av[i], "|"))
 			i++;
-		if (!strcmp(av[i], "cd"))
+		if (!strcmp(*av, "cd"))
 			exec_cd(av);
 		else
 			executor(av, i, env);
